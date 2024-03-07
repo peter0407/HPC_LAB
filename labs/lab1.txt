@@ -1,0 +1,34 @@
+#include <iostream>
+#include <tchar.h>
+#include <Windows.h>
+#include <omp.h>
+#include <vector>
+#define N 100 // Define the size of the array
+#define MOD 20 // Define the modulus for random number generation
+
+int main() {
+    int nthreads = 4, tid; // Define the number of threads and thread id
+    int arr[N], num = 15; // Define the array and the number to search for
+    for(int i = 0; i < N; i++) {
+        arr[i] = rand() % MOD; // Fill the array with random numbers
+    }
+    std::vector<std::pair<int, int>> v; // Vector to store the indices where the number is found and the id of the thread that found it
+
+    // Start of the parallel region
+    #pragma omp parallel private(tid) num_threads(nthreads)
+    {
+        tid = omp_get_thread_num(); // Each thread gets its own copy of tid, which is set to the thread's id
+        // Each thread searches a section of the array for the number
+        for (int i = tid * (N / nthreads); i < (tid + 1) * (N / nthreads); i++) {
+            if(arr[i] == num) {
+                v.push_back(std::make_pair(i, tid)); // If the number is found, add the index and thread id to the vector
+            }
+        }
+    }
+    // End of the parallel region
+
+    // Print the indices where the number was found and the id of the thread that found it
+    for(int i = 0; i < v.size(); i++) {
+        std::cout << "arr[" << v[i].first << "], thread = " << v[i].second << std::endl;
+    }
+}

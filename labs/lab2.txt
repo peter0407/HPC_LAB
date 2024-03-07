@@ -1,0 +1,30 @@
+#include <iostream>
+#include <tchar.h>
+#include <Windows.h>
+#include <omp.h>
+#include <vector>
+#define N 100 // Define the size of the array
+#define MOD 20 // Define the modulus for random number generation
+
+int main() {
+    int nPoints = 1000000;
+    int tid, nthreads = 8;
+    double nInside = 0;
+    double randX, randY;
+
+    #pragma omp parallel private(tid, randX, randY) reduction(+:nInside) num_threads(nthreads)
+    {
+        tid = omp_get_thread_num();
+        // Each thread generates a portion of the points
+        #pragma omp for
+        for (int i = 0; i < nPoints; i++) {
+            randX = (double)(rand()%100)/ 100.0;
+            randY = (double)(rand()%100)/ 100.0;
+             // If the point is inside the circle (distance from origin <= 1), increment nInside
+            if (randX * randX + randY * randY <= 1) {
+                nInside++;
+            }
+        }
+    }
+    printf("Pi: %f\n", 4 * nInside / nPoints);
+}

@@ -1,0 +1,11 @@
+/.vs
+/.vscode
+/HPC_LAB
+/HPC_LAB.sln
+/HPC_LAB.vcxproj
+/HPC_LAB.vcxproj.filters
+/HPC_LAB.vcxproj.user
+/main.exe
+/tempCodeRunnerFile.cpp
+/tempCodeRunnerFile.exe
+/x64
